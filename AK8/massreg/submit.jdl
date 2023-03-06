@@ -1,0 +1,15 @@
+request_cpus          = 1
+request_gpus          = 0
+requirements          = regexp("V100", TARGET.CUDADeviceName)
+executable            = run.sh
+should_transfer_files = YES
+output                = logs/$(ClusterId)-$(ProcId)/out.out
+error                 = logs/$(ClusterId)-$(ProcId)/err.err
+log                   = logs/$(ClusterId)-$(ProcId)/log.log
+WhenToTransferOutput  = ON_EXIT
+want_graceful_removal = true
+
++JobFlavour = "testmatch"
++AccountingGroup = "group_u_CMST3.all"
+
+queue
