@@ -5,10 +5,10 @@ set -x
 echo "args: $@"
 
 # set the dataset dir
-[[ -z $DATADIR ]] && DATADIR='/eos/cms/store/group/ml/Tagging4ScoutingHackathon/Adelina/hbb/ak8'
+[[ -z $DATADIR ]] && DATADIR='input'
 
 # set the dataset dir
-[[ -z $OUTPUT ]] && OUTPUT='/eos/cms/store/group/ml/Tagging4ScoutingHackathon/Adelina/hbb/ak8/training_output/Run3Summer22'
+[[ -z $OUTPUT ]] && OUTPUT='output'
 
 # set a comment via `COMMENT`
 suffix=${COMMENT}
@@ -28,15 +28,14 @@ model_config="networks/massreg.py"
 epochs=50
 samples_per_epoch=$((10000 * 1024 / $NGPUS))
 samples_per_epoch_val=$((10000 * 128))
-dataopts="--num-workers 4 --fetch-step 0.01"
+dataopts="--num-workers 0 --fetch-step 0.01"
 batchopts="--batch-size 1024 --start-lr 1e-2"
 
 $CMD \
     --regression-mode \
     --demo \
     --data-train \
-    "BulkGravitonToHHTo4Q:${DATADIR}/BulkGravitonToHH_MX*/Run3Summer22/*/*/hadd.root" \
-    "QCD:${DATADIR}/QCD_PT-*/Run3Summer22/*/*/hadd.root" \
+    "BulkGravitonToHHTo4Q:hadd.root" \
     --data-config ${data_config} --network-config ${model_config} \
     --model-prefix ${OUTPUT}/ak8_massreg_{auto}${suffix}/net \
     $dataopts $batchopts \
