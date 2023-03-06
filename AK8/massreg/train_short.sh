@@ -35,7 +35,7 @@ $CMD \
     --regression-mode \
     --demo \
     --data-train \
-    "BulkGravitonToHHTo4Q:hadd.root" \
+    "BulkGravitonToHHTo4Q:${DATADIR}/hadd.root" \
     --data-config ${data_config} --network-config ${model_config} \
     --model-prefix ${OUTPUT}/ak8_massreg_{auto}${suffix}/net \
     $dataopts $batchopts \
