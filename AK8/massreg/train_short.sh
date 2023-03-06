@@ -25,7 +25,7 @@ fi
 data_config="data/massreg.yaml"
 model_config="networks/massreg.py"
 
-epochs=50
+epochs=1
 samples_per_epoch=$((10000 * 1024 / $NGPUS))
 samples_per_epoch_val=$((10000 * 128))
 dataopts="--num-workers 0 --fetch-step 0.01"
@@ -35,10 +35,10 @@ $CMD \
     --regression-mode \
     --demo \
     --data-train \
-    "BulkGravitonToHHTo4Q:${DATADIR}/hadd.root" \
+    "BulkGravitonToHHTo4Q:${DATADIR}/*.root" \
     --data-config ${data_config} --network-config ${model_config} \
     --model-prefix ${OUTPUT}/ak8_massreg_{auto}${suffix}/net \
     $dataopts $batchopts \
-    --samples-per-epoch ${samples_per_epoch} --samples-per-epoch-val ${samples_per_epoch_val} --num-epochs $epochs --gpus "0" \
+    --num-epochs $epochs --gpus "0" \
     --optimizer ranger --log ${OUTPUT}/ak8_massreg_{auto}${suffix}.log --predict-output pred.root \
     "${@:2}"
