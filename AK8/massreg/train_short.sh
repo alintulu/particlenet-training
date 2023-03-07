@@ -39,6 +39,7 @@ $CMD \
     --data-config ${data_config} --network-config ${model_config} \
     --model-prefix ${OUTPUT}/ak8_massreg_{auto}${suffix}/net \
     $dataopts $batchopts \
+    --samples-per-epoch ${samples_per_epoch} --samples-per-epoch-val ${samples_per_epoch_val} \
     --num-epochs $epochs --gpus "0" \
     --optimizer ranger --log ${OUTPUT}/ak8_massreg_{auto}${suffix}.log --predict-output pred.root \
     "${@:2}"
