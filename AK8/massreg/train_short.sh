@@ -28,8 +28,8 @@ model_config="networks/massreg.py"
 epochs=1
 samples_per_epoch=$((10000 * 1024 / $NGPUS))
 samples_per_epoch_val=$((10000 * 128))
-dataopts="--num-workers 0 --fetch-step 0.01"
-batchopts="--batch-size 1024 --start-lr 1e-2"
+dataopts="--num-workers 4 --fetch-step 0.01"
+batchopts="--batch-size 512 --start-lr 1e-2"
 
 $CMD \
     --regression-mode \
@@ -40,6 +40,7 @@ $CMD \
     --model-prefix ${OUTPUT}/ak8_massreg_{auto}${suffix}/net \
     $dataopts $batchopts \
     --samples-per-epoch ${samples_per_epoch} --samples-per-epoch-val ${samples_per_epoch_val} \
+    --data-fraction 0.5 \
     --num-epochs $epochs --gpus "0" \
     --optimizer ranger --log ${OUTPUT}/ak8_massreg_{auto}${suffix}.log --predict-output pred.root \
     "${@:2}"
