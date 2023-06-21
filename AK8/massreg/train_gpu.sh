@@ -1,11 +1,11 @@
 #!/bin/bash
 
-set -x
+#set -x
 
 echo "args: $@"
 
 # set the dataset dir
-[[ -z $DATADIR ]] && DATADIR='input'
+[[ -z $DATADIR ]] && DATADIR='/eos/cms/store/group/ml/Tagging4ScoutingHackathon/Adelina/hbb/ak8'
 
 # set the dataset dir
 [[ -z $OUTPUT ]] && OUTPUT='output'
@@ -25,22 +25,15 @@ fi
 data_config="data/massreg.yaml"
 model_config="networks/massreg.py"
 
-epochs=1
-samples_per_epoch=$((10000 * 1024 / $NGPUS))
-samples_per_epoch_val=$((10000 * 128))
-dataopts="--num-workers 4 --fetch-step 0.01"
-batchopts="--batch-size 512 --start-lr 1e-2"
-
 $CMD \
     --regression-mode \
     --demo \
     --data-train \
-    "BulkGravitonToHHTo4Q:${DATADIR}/*.root" \
+    "BulkGravitonToHHTo4Q:${DATADIR}/BulkGravitonToHH_MX960_MH82_TuneCP5_13p6TeV_madgraph-pythia8/Run3Summer22EE/230322_202312/0000/ntuple_1*.root" \
+    "QCD:${DATADIR}/QCD_PT-1000to1400_TuneCP5_13p6TeV_pythia8/Run3Summer22EE/230328_083632/0000/ntuple_1*.root" \
     --data-config ${data_config} --network-config ${model_config} \
     --model-prefix ${OUTPUT}/ak8_massreg_{auto}${suffix}/net \
-    $dataopts $batchopts \
-    --samples-per-epoch ${samples_per_epoch} --samples-per-epoch-val ${samples_per_epoch_val} \
-    --data-fraction 0.5 \
-    --num-epochs $epochs --gpus "0" \
+    --gpus "0" \
+    --num-epochs 2 \
     --optimizer ranger --log ${OUTPUT}/ak8_massreg_{auto}${suffix}.log --predict-output pred.root \
     "${@:2}"

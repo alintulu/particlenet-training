@@ -8,7 +8,7 @@ echo "args: $@"
 [[ -z $DATADIR ]] && DATADIR='/eos/cms/store/group/ml/Tagging4ScoutingHackathon/Adelina/hbb/ak8'
 
 # set the dataset dir
-[[ -z $OUTPUT ]] && OUTPUT='/eos/cms/store/group/ml/Tagging4ScoutingHackathon/Adelina/hbb/ak8/training_output/Run3Summer22'
+[[ -z $OUTPUT ]] && OUTPUT='output'
 
 # set a comment via `COMMENT`
 suffix=${COMMENT}
@@ -25,21 +25,22 @@ fi
 data_config="data/massreg.yaml"
 model_config="networks/massreg.py"
 
-epochs=50
+epochs=10
 samples_per_epoch=$((10000 * 1024 / $NGPUS))
 samples_per_epoch_val=$((10000 * 128))
 dataopts="--num-workers 4 --fetch-step 0.01"
-batchopts="--batch-size 1024 --start-lr 1e-2"
+batchopts="--batch-size 128 --start-lr 1e-2"
 
 $CMD \
     --regression-mode \
-    --demo \
     --data-train \
-    "BulkGravitonToHHTo4Q:${DATADIR}/BulkGravitonToHH_MX*/Run3Summer22/*/*/hadd.root" \
-    "QCD:${DATADIR}/QCD_PT-*/Run3Summer22/*/*/hadd.root" \
+    "BulkGravitonToHHTo4Q:${DATADIR}/BulkGravitonToHH_*/Run3Summer22EE/*/0000/ntuple_1.root" \
+    "QCD:${DATADIR}/QCD_*/Run3Summer22EE/*/0000/ntuple_1.root" \
     --data-config ${data_config} --network-config ${model_config} \
     --model-prefix ${OUTPUT}/ak8_massreg_{auto}${suffix}/net \
+    --gpus "2,3" \
     $dataopts $batchopts \
-    --samples-per-epoch ${samples_per_epoch} --samples-per-epoch-val ${samples_per_epoch_val} --num-epochs $epochs --gpus "0" \
+    --samples-per-epoch ${samples_per_epoch} --samples-per-epoch-val ${samples_per_epoch_val} \
+    --num-epochs ${epochs} \
     --optimizer ranger --log ${OUTPUT}/ak8_massreg_{auto}${suffix}.log --predict-output pred.root \
     "${@:2}"
